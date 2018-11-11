@@ -1,0 +1,40 @@
+
+\begin{figure*}
+\centering
+\tikzexternaldisable
+\tikzumlset{font=\footnotesize}
+\begin{tikzpicture}
+%
+%
+\begin{umlpackage}[fill=none]{marietta}       
+        \begin{umlpackage}{marietta{.}util}
+         \umlclass[template=T,x=0,y=0]{Iterator}
+        {
+	  \# cursor: \primint
+        }
+        {
+	  \umlvirt{+hasNext(): \primbool}\\
+	  \umlvirt{+next(): T}
+        }
+        
+         \umlclass[template=T,x=0,y=4]{ArrayIterator}
+        {
+	  - array: T[~]
+        }
+        {
+	  ArrayIterator(array: T[~])\\
+          {+hasNext(): \primbool}\\
+	  {+next(): T}
+        }
+        \end{umlpackage}    
+        
+        \umlsimpleclass[x=6, y=0, fill=cyan!25]{ScenarioTree}
+\end{umlpackage}
+        
+\umlimpl[arg1=impl]{ArrayIterator}{Iterator}
+\umldep[stereo=depends]{ScenarioTree}{Iterator}
+\end{tikzpicture}
+
+\tikzexternalenable
+\caption{Some utility functions.}
+\end{figure*}

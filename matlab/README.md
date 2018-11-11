@@ -178,7 +178,7 @@ subplot(122); solution.plotStateCoordinate(2);
 
 this produces...
 
-![State vs time](./matlab/design/state.png)
+![State vs time](./design/state.png)
 
 ## Documentation
 

@@ -1,0 +1,45 @@
+
+\begin{figure*}
+\centering
+\tikzexternaldisable
+\tikzumlset{font=\footnotesize}
+\begin{tikzpicture}
+%
+%
+\begin{umlpackage}[fill=none]{marietta}
+       
+               
+        % CLASS ConstraintNormState
+        \umlabstract[x=+8, y=3.5, fill=yellow!50]{ConstraintFunction}
+        {
+        }
+        {
+          \umlvirt{+constraint(x: \primdouble[~], u: \primdouble[~],}\\
+          \quad \umlvirt{ w: \primdouble[~]):\primdouble[~] }
+        }%
+        \umlnote[x=2, y=3.5, width=2.8cm]{ConstraintFunction}
+        {
+	    Functions \(\phi_t(x,u,w)\)
+	}
+        \umlclass[x=+8,y=0, fill=yellow!50]{ConstraintNormState}
+        {
+	  -c: \primdouble
+        }
+        {
+          +ConstraintNormState(c: \primdouble)\\
+          {+constraint(x: \primdouble[~], u: \primdouble[~],}\\
+          \quad { w: \primdouble[~]): \primdouble[~] }
+        }%
+        \umlnote[x=2, y=0, width=2.8cm]{ConstraintNormState}
+        {
+	    \(\phi_t(x,u,w)=\|x\|^2 - c\)
+	}        
+\end{umlpackage}
+        
+        
+\umlimpl[arg1=impl]{ConstraintNormState}{ConstraintFunction}
+\end{tikzpicture}
+
+\tikzexternalenable
+\caption{UML of constraint functions. These are functions of the form \(\phi_t:\R^{n_x}\times \R^{n_u}\times \R^{n_w}\ni (x,u,w) \mapsto \phi_t(x,u,w) \in \R\). We need to impose constraints of the form \(r_t[\phi_t(x,u,w)]\leq 0\) as explained in the paper. An example of such a function is \texttt{marietta.ConstraintNormState} which corresponds to \(\phi_t(x,u,w) = \|x\|^2 - c\), for some given \(c>0\).}
+\end{figure*}

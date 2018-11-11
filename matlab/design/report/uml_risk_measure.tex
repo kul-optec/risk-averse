@@ -1,0 +1,61 @@
+
+\begin{figure*}
+\centering
+\tikzexternaldisable
+\tikzumlset{font=\footnotesize}
+\begin{tikzpicture}
+%
+%
+\begin{umlpackage}[fill=none]{marietta}
+        
+        \umlclass[x=8,y=0, fill=gray!35]{ConicRiskMeasure}
+        {
+	    -data: \primstructure
+        }
+        {
+	    +ConicRiskMeasure(data: \primstructure)\\
+	    +ConicRiskMeasure(E: \primdouble[][], F: \primdouble[][],\\
+	    \quad b: \primdouble[], cone: \primstructure)\\
+	    +risk(Z: \primdouble[], tol: \primdouble): \primdouble\\
+	    +getData(): \primstructure\\
+	    +compress()
+        }
+        \umlclass[x=8,y=-4.5, fill=gray!35]{ConicRiskFactory}
+        {
+        }
+        {
+	    \umlstatic{+createAvar(p, alpha)}\\
+	    \umlstatic{+createEvar(p, alpha)}\\
+	    \umlstatic{+createMax(p, alpha)}
+        }
+        
+        
+        \umlclass[y=-4.5,x=1.5, fill=gray!35]{ParametricRiskFactory}
+        {}
+        {
+	 \umlstatic{createParametricAvarAlpha(): \primstructure}
+	 \\
+	 \umlstatic{createParametricEvarAlpha(): \primstructure}
+        }
+
+        \umlsimpleclass[x=1.5,y=0, fill=gray!35]{ParametricRisk}
+        
+        
+        \umlnote[x=1.5,y=4, width=5.2cm]{ParametricRisk}
+        {
+	  \texttt{ParametricRisk} is an anonymous function of the form \texttt{@(p) paramRisk(p): ConicRiskMeasure}, where \texttt{p} is a probability vector
+	}
+\end{umlpackage}                
+        
+        
+
+\umldep[arg2=dep]{ParametricRisk}{ConicRiskMeasure}
+\umluniassoc[stereo=create]{ConicRiskFactory}{ConicRiskMeasure}
+\umluniassoc[stereo=create]{ParametricRiskFactory}{ParametricRisk}
+\end{tikzpicture}
+
+\tikzexternalenable
+\caption{UML for the classes in \texttt{marietta} associated with risk measures. Class \texttt{ParametricRiskFactory}
+         is used to create parametric risks --- conic risk measures which depend parametrically on the the underlying
+         probability vector \(\pi\).}
+\end{figure*}

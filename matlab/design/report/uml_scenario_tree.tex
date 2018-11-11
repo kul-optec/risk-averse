@@ -1,0 +1,75 @@
+
+\begin{figure*}
+\centering
+\tikzexternaldisable
+\tikzumlset{font=\footnotesize}
+\begin{tikzpicture}
+%
+%
+\begin{umlpackage}[fill=none]{marietta}       
+        \umlclass[x=-2,y=-8.3, fill=cyan!25]{ScenarioTree}
+        {
+	  -children: \primint[~]\\
+	  -ancestor: \primint[~]\\
+	  -stage: \primint[~]\\
+	  -leaves: \primint[~]\\
+	  -probability: \primdouble[~]\\
+	  -value: \primdouble[~][~]\\
+	  -scenario\_index: \primint[~]\\ 
+	  -data: \primstructure[~]
+        }
+        {
+	    +mapValuesToData(vals: \primdouble[~], data: \primstructure[~])\\
+	    +getIteratorNonleafNodes(): Iterator{\textless}\primint{\textgreater}\\
+	    +getIteratorNodesAtStage(): Iterator{\textless}\primint{\textgreater}\\
+	    +getAncestorOfNode(nodeId: \primint): \primint[~]\\
+	    +getAncestors(): \primint[~]\\
+	    +getChildrenOfNode(nodeId: \primint): \primint[~]\\
+	    +getConditionalProbabilityOfChildren(\\
+	    \quad nodeId: \primint): \primdouble[~]\\
+	    +getData(): \primstructure[~]\\
+	    +getDataAtNode(nodeId: \primint): \primstructure\\
+	    +getHorizon(): \primint\\
+	    +getLeaveNodes(): \primint[~]\\
+	    +getNodesAtStage(stage: \primint): \primint[~]\\
+	    +getNumberOfChildren(nodeId: \primint): \primint\\
+	    +getNumberOfNodes(): \primint\\
+	    +getNumberOfNodesAtStage(stage: \primint): \primint\\
+	    +getNumberOfNonleafNodes(): \primint\\
+	    +getNumberOfScenarios(): \primint\\
+	    +getProbabilityOfNode(nodeId: \primint): \primdouble\\
+	    +getScenarioWithID(scenId: \primint): \primint[~]\\
+	    +getSiblingsOfNode(nodeId: \primint): \primint[~]\\
+	    +getStageOfNode(nodeId: \primint): \primint\\
+	    +getValueDimension(): \primint\\
+	    +getValueOfNode(nodeId: \primint): \primdouble\\
+	    +setAllDataFields(fieldName: string, fieldVal)\\
+	    +setDataField(nodeId: \primint, fieldName: string, fieldVal)\\
+	    +setValueAtNode(nodeId: \primint, val: \primdouble)\\
+        }
+        \umlclass[x=7.5,y=-8.0, fill=cyan!25]{ScenarioTreeFactory}
+        {}
+        {
+	  +generateTreeFromData(\\
+	  \quad data: \primdouble[~][~][~], \\
+	  \quad ops:\primstructure): ScenarioTree\\
+	  +generateTreeFromMarkovChain(\\
+	  \quad probTrans: \primdouble[~][~], \\
+	  \quad initDistr: \primdouble[~], \\
+	  \quad ops: \primstructure): ScenarioTree\\
+	  +generateTreeFromIid(\\
+	  \quad probDist: \primdouble[~][~],\\
+	  \quad ops: \primstructure): ScenarioTree
+        }                        
+        
+\end{umlpackage}
+                
+\umluniassoc[stereo=create, anchor2=3]{ScenarioTreeFactory}{ScenarioTree}
+\umldep[stereo=friend, anchor2=-3]{ScenarioTreeFactory}{ScenarioTree}
+\end{tikzpicture}
+
+\tikzexternalenable
+\caption{UML of \texttt{marietta.ScenarioTree} and the associated factory.
+         \texttt{marietta.ScenarioTreeFactory} can be used to make scenario trees
+         from IID and Markov processes as well as raw data.}
+\end{figure*}

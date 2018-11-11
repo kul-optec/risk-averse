@@ -1,0 +1,40 @@
+\begin{figure*}
+\centering
+\tikzexternaldisable
+\tikzumlset{font=\footnotesize}
+\begin{tikzpicture}
+%
+%
+\begin{umlpackage}[fill=none]{marietta}
+        % CLASS RiskAverseOptimalController
+        \umlsimpleclass[x=-2, fill=orange!35]{RiskAverseOptimalController}       
+        \umlclass[x=+7, fill=green!50]{Solution}
+        {
+	  -tree: ScenarioTree\\
+	  -X: \primdouble[~]\\
+	  -U: \primdouble[~]\\
+	  -J: \primdouble\\
+	  -terminalCost: \primdouble[~][~]
+        }
+        {
+          +Solution(tree: ScenarioTree, X: \primdouble[~], \\
+          \quad U: \primdouble[~], J: \primdouble, QN: \primdouble[~][~])\\          
+          +getOptimalValue(): \primdouble\\
+          +getDistributionStageCost(stage: \primint): \primdouble[~][~]\\
+          +getDistributionTerminalCost(): \primdouble[~][~]\\
+          +plotStateCoordinate(iState: \primint)\\
+          +plotInputCoordinate(iInput: \primint)\\          
+        }%        
+\end{umlpackage}
+        
+        
+\umldep[stereo=produces]{RiskAverseOptimalController}{Solution}
+\end{tikzpicture}
+
+\tikzexternalenable
+\caption{UML for \texttt{marietta.Solution}. \texttt{RiskAverseOptimalController} produces a solution
+         (given an initial condition \(x_0\) which comprises of (i) a sequence of optimal control laws
+         \(u_0^\star, u_1^\star, \ldots, u_{N-1}^{\star}\), which corresponds to control actions on 
+         all non-leaf nodes of the tree, (ii) the corresponding optiamal evolution of the system state.
+         To that corresponds an optimal value \(J^\star\). This class allows to plot the solutions.}
+\end{figure*}

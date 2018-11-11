@@ -1,0 +1,91 @@
+
+\begin{figure*}
+\centering
+\tikzexternaldisable
+\tikzumlset{font={\footnotesize\normalfont\upshape}}
+\begin{tikzpicture}
+%
+%
+\begin{umlpackage}[fill=none]{marietta}
+        % CLASS RiskAverseOptimalController
+        \umlclass[x=3, y=-2, fill=orange!35]{RiskAverseOptimalController}
+        {
+	  -parametricRiskCost: ParametricRisk\\
+	  -umin: \primdouble[~],
+	  -umax: \primdouble[~]\\
+	  -tree: ScenarioTree,
+	  -controller: YalmipOptimizer\\
+	  -terminalCost: \primdouble[~][~]\\
+	  -stageWiseRiskConstraints: ConstraintFunction[~]\\
+	  -nestedRiskConstraints: ConstraintFunction[~]\\
+	  -stageWiseParametricRisk: ParametricRisk[~]\\
+	  -nestedParametricRisk: ParametricRisk[~]
+        }
+        {
+          +RiskAverseOptimalController()\\
+          +setInputBounds(umin: \primdouble[~], umax: \primdouble[~])\\
+          +setScenarioTree(tree)\\
+          +setParametricRiskCost(paramRisk: ParametricRisk)\\  
+          +setTerminalCostMatrix(QN: \primdouble[~][~])\\
+          +addStageWiseRiskConstraint(gt: ConstraintFunction\\
+          \quad paramRisk: ParametricRisk, stages: \primint[~])\\
+          +addNestedRiskConstraint(gt: ConstraintFunction\\
+          \quad paramRisk: ParametricRisk, stages: \primint[~])\\
+          +makeController()\\
+          +control(x: \primdouble[~]): Solution\\
+        }
+        
+        \umlsimpleclass[x=3, y=-7.2, fill=gray!35]{ParametricRisk}
+        \umlsimpleclass[x=3, y=-9.1, fill=gray!35]{ParametricRiskFactory}        
+        
+        \umlsimpleclass[x=-4, y=-2, fill=cyan!25]{ScenarioTree}
+        \umlsimpleclass[x=-4, y=-3.7, fill=cyan!25]{ScenarioTreeFactory}                
+        
+        \umlsimpleclass[x=9, y=-7.2, fill=gray!35]{ConicRiskMeasure}        
+        \umlsimpleclass[x=9, y=-9.1, fill=gray!35]{ConicRiskFactory}        
+        
+        
+        \umlsimpleclass[x=10,y=-2, fill=green!50]{Solution}
+        % CLASS ConstraintFunction
+        \umlsimpleclass[x=+3, y=3.1, fill=yellow!50]{ConstraintFunction}
+        \umlsimpleclass[x=+3,y=5.0, fill=yellow!50]{ConstraintNormState}
+        \umlnote[x=7, y=3.1, width=2.6cm]{ConstraintFunction}
+        {
+	    Functions \(\phi_t(x,u,w)\)
+	}
+        % CLASS ConstraintNormState        
+        \umlnote[x=7, y=5.0, width=2.6cm]{ConstraintNormState}
+        {
+	    \(\phi_t(x,u,w)=\|x\|^2\)
+	}
+                
+        \begin{umlpackage}{marietta{.}util}
+         \umlsimpleclass[template=T,x=-4,y=-0.3]{Iterator}                
+         \umlsimpleclass[template=T,x=-4,y=1.5]{ArrayIterator}
+%          \umlnote[x=-3, y=-7, width=5.3cm]{RiskAverseOptimalController}
+%         {
+% 	    We could create a 
+% 	    \texttt{RiskAverseOptimalControllerBuilder}
+% 	}
+        \end{umlpackage}
+                
+        
+\end{umlpackage}
+        
+        
+\umldep[arg1=dep]{RiskAverseOptimalController}{ConstraintFunction}
+\umldep[stereo=produces]{RiskAverseOptimalController}{Solution}
+\umldep[arg1=dep]{RiskAverseOptimalController}{ParametricRisk}
+\umldep[stereo=produces]{ParametricRisk}{ConicRiskMeasure}
+\umldep[arg2=dep]{RiskAverseOptimalController}{ScenarioTree}
+\umldep[arg2=dep]{ScenarioTree}{Iterator}
+\umlimpl[arg1=impl]{ConstraintNormState}{ConstraintFunction}
+\umlimpl[arg1=impl]{ArrayIterator}{Iterator}
+\umluniassoc[stereo=create]{ConicRiskFactory}{ConicRiskMeasure}
+\umldep[stereo=friend/create]{ScenarioTreeFactory}{ScenarioTree}
+\umluniassoc[stereo=create]{ParametricRiskFactory}{ParametricRisk}
+\end{tikzpicture}
+
+\tikzexternalenable
+\caption{Simple UML --- structure of \texttt{marietta}.}
+\end{figure*}
