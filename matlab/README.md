@@ -192,4 +192,4 @@ to access the documentation of this toolbox.
 
 ## UML of marietta
 
-![UML](./matlab/design/uml.png)
+![UML](./design/uml.png)
