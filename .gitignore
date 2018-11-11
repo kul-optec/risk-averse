@@ -3,3 +3,10 @@
 *.dia
 *.jpeg
 *~
+
+# TeX files
+*.aux
+*.auxlock
+*.log
+*.backup
+
