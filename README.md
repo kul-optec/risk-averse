@@ -11,4 +11,4 @@ About the toolbox:
 * **License**: [MIT License]()
 * **Developed by**: P. Sopasakis, M. Schuurmans and P. Patrinos
 
-Check out the [** detailed documentation**](./matlab/README.md).
+Check out the [**detailed documentation**](./matlab/README.md).
