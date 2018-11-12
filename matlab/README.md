@@ -222,34 +222,126 @@ quad_cost = marietta.functions.MarkovianQuadStateInputFunction(Q, R);
 This is a step-by-step guide to constructing and solving a risk-averse  optimal control problem.
 
 ### Problem definition
-First, let us construct a scenario tree using the example file `makeRiskExample` and let us choose a risk measure from `marietta.ParametricRiskFactory`...
+Let us first define some **parameters**:
 
 ```matlab
-alpha = 0.5; 
-N = 5; 
-[tree, umin, umax, QN] = makeRiskExample(N);
-pAvar = marietta.ParametricRiskFactory.createParametricAvarAlpha(alpha);
+alpha = 0.8;                    % alpha
+cAlpha = 0;                     % alpha used for risk constraints 
+lambda_poisson = 2;             % Poisson parameter
+num_modes = 3;                  % number of modes of Markov chain
+horizon_length = 12;            % prediction horizon
+branching_horizon = 3;          % branching horizon
+umin = -10; umax = 10;          % input bounds
 ```
+
+Then, we construct the **scenario tree**:
+
+```matlab
+pmf_poisson = truncated_poisson_pmf(lambda_poisson, num_modes);
+
+% Define the scenario tree
+initialDistr = pmf_poisson;
+
+% Make sparse transition matrix
+probTransitionMatrix = rand(num_modes, num_modes);
+rowSumPTM = sum(probTransitionMatrix, 2)';
+probTransitionMatrix = probTransitionMatrix ./ kron(ones(1, num_modes), rowSumPTM');
+
+
+% Make the scenario tree
+tree_options.horizonLength = horizon_length;
+tree_options.branchingHorizon = branching_horizon;
+tree = marietta.ScenarioTreeFactory.generateTreeFromMarkovChain(...
+    probTransitionMatrix, initialDistr, tree_options);
+```
+The system is an MJLS and the stage cost is quadratic given by `ell(x,u,w) = x'*Q(w)*x + u'*R(w)*u`.
+
+Let us define such matrices...
+
+```matlab
+% Define the data (system parameters and more)
+A = cell(num_modes, 1);
+B = cell(num_modes, 1);
+Q = cell(num_modes, 1);
+R = cell(num_modes, 1);
+for i=1:num_modes
+    re_ = 0.95 + 0.1 * randn;
+    im_ = 0.3 + i * 0.05 * randn;
+    u = orth(randn(2));
+    A{i} = u*[re_ im_; -im_ re_]*u';
+    B{i} = u*[1; 0.1*randn];
+    Q{i} = (1+0.05*randn)*eye(2);
+    R{i} = 1 + 0.01*randn;
+end
+Q{num_modes} = 10*Q{num_modes};
+```
+We now define the **stage cost function** and the **system dynamics**:
+
+```matlab
+dynamics = marietta.functions.MarkovianLinearStateInputFunction(A, B);
+stageCost = marietta.functions.MarkovianQuadStateInputFunction(Q, R);
+```
+
+Similarly, we define the **terminal cost function** `ell_N(x) = x'*QN*x`:
+
+```matlab
+QN = 70*eye(2);
+terminalCost = marietta.functions.QuadTerminalFunction(QN);
+```
+We need to impose that `r_t[phi(x_t,u_t,w_t)] <= 0`, where `r_t` is a risk measure at stage `t`.
+
+Here is an example of such a function `phi(x,u,w) = x'*x - c`:
+
+```matlab
+c = 0.5;
+stateNorm = marietta.functions.SimpleQuadStateInputFunction(eye(2), 0); 
+stageConstraint = stateNorm - c; % using operator overloading
+```
+
 
 ### Risk-averse optimizers
 Let us now construct a risk averse optimizer (using the Builder pattern)...
 
 ```matlab
+pAvar = marietta.ParametricRiskFactory.createParametricAvarAlpha(alpha);
+pAvarConstr = marietta.ParametricRiskFactory.createParametricAvarAlpha(cAlpha);
 rao = marietta.RiskAverseOptimalController();
+
 rao.setInputBounds(umin,umax)...
     .setScenarioTree(tree)...
+    .setDynamics(dynamics)...
+    .setStageCost(stageCost)...
     .setParametricRiskCost(pAvar)...
-    .setTerminalCostMatrix(QN);
+    .setTerminalCost(terminalCost)...
+    .addStageWiseRiskConstraints(stageConstraint, pAvarConstr, horizon_length-6:horizon_length-1);
+
 rao.makeController();
 ```
 
-We can now use the above controller/optimizer to solve a problem given an 
-initial state `x0`...
+We can now use the above controller/optimizer to solve a problem given an  initial state `x0`...
 
 ```matlab
 x0 = [-3;3.5];
 solution = rao.control(x0);
 ```
+
+The solution is a `marietta.Solution` object:
+
+```
+-------------------------------------
+Risk-averse Optimal Controller
+-------------------------------------
+Numer of decision variables :    1943
+Number of constraints       :    4341
+Elapsed time is 0.175558 seconds.
+Solution ( Successfully solved )
+State dimension    :     2
+Input dimension    :     1
+Prediction horizon :    12
+Number of nodes    :   283
+Status code        :     0
+```
+
 ### Visualization
 We may now plot the solution using
 
@@ -261,8 +353,25 @@ subplot(122); solution.plotStateCoordinate(2);
 
 this produces...
 
-![State vs time](./design/state.png)
+![State vs time](examples/figures/xmpl_state_seq.jpg)
 
+Similarly, we may plot the control actions on the tree:
+
+```matlab
+figure;
+solution.plotInputCoordinate(1);
+```
+
+![Input vs time](examples/figures/xmpl_input_seq.jpg)
+
+We may also plot an error bar that gives information about the distribution of the stage costs 
+
+```matlab
+figure;
+solution.plotCostErrorBar(1-alpha, tree.getHorizon)
+```
+
+![Constraint error bar](examples/figures/xmpl_constraint_error_bar.jpg)
 ## Documentation
 
 In MATLAB, type
@@ -276,3 +385,5 @@ to access the documentation of this toolbox.
 ## UML of marietta
 
 ![UML](./design/uml.png)
+
+(*) the UML needs to be updated.

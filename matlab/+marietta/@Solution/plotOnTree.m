@@ -11,7 +11,7 @@ function plotOnTree(obj, z, plot_spec)
 
 tree = obj.rao.tree;
 time_axis = 0:tree.getHorizon;
-hold on; grid on; plot_spec_ = struct('marker', '.', 'color', [0,0,0,1]);
+hold on; grid on; plot_spec_ = struct('marker', '.', 'color', [0,0,0,1],'linewidth', 1.5);
 if nargin >=3, plot_spec_ = plot_spec; end
 for t=1:time_axis(end)
     iterNodesStageT = tree.getIteratorNodesAtStage(t);
