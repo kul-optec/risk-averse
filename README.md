@@ -11,4 +11,8 @@ About the toolbox:
 * **License**: [MIT License]()
 * **Developed by**: P. Sopasakis, M. Schuurmans and P. Patrinos
 
+## Documentation
+
 Check out the [**detailed documentation**](./matlab/README.md).
+
+See how to use `marietta` to devise a [**betting strategy**](./matlab/examples/xmpl_betting.md).

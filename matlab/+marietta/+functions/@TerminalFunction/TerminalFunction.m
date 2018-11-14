@@ -33,6 +33,10 @@ classdef TerminalFunction < handle
         function r = mpower(f, p)
             r = marietta.functions.op.TerminalFunctionOp(f, p, @(s,z) (s^z));
         end
+        
+        function r = log(f)
+            r = marietta.functions.op.TerminalFunctionOp(f, [], @(s,z) log(s));
+        end
     end
 end
 

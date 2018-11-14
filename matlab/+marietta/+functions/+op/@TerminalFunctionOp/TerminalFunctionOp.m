@@ -18,6 +18,10 @@ classdef TerminalFunctionOp < marietta.functions.TerminalFunction
         end
         
         function result = apply(obj, x)
+            if isnumeric(obj.f1)
+                result = obj.f1 * obj.f2.apply(x);
+                return;
+            end
             result = obj.f1.apply(x);
             if isa(obj.f2, 'marietta.functions.TerminalFunction')
                 result = obj.op(result, obj.f2.apply(x));

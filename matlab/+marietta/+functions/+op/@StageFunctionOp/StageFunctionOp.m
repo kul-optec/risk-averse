@@ -18,6 +18,10 @@ classdef StageFunctionOp < marietta.functions.StageFunction
         end
         
         function result = apply(obj, x, u, w)
+            if isnumeric(obj.f1)
+                result = obj.f1 * obj.f2.apply(x, u, w);
+                return;
+            end
             result = obj.f1.apply(x,u,w);
             if isa(obj.f2, 'marietta.functions.StageFunction')
                 result = obj.op(result, obj.f2.apply(x,u,w));

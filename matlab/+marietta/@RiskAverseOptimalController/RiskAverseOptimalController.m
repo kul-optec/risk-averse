@@ -6,6 +6,12 @@ classdef RiskAverseOptimalController < matlab.mixin.Copyable
         parametricRiskCost;     % parametric risk used in the cost
         umin;                   % umin
         umax;                   % umax
+        xmin;
+        xmax;
+        Fx;
+        Fu;
+        fmin;
+        fmax;
         tree;                   % scenario tree
         controller;             % optimizer object of YALMIP
         
@@ -87,9 +93,25 @@ classdef RiskAverseOptimalController < matlab.mixin.Copyable
         
         makeController(obj);
         
-        function obj = setInputBounds(obj,umin, umax)
+        function obj = setInputBounds(obj, umin, umax)
             obj.umin = umin;
-            obj.umax = umax;
+            if nargin > 2, obj.umax = umax; end
+        end
+        
+        function obj = setStateBounds(obj,xmin, xmax)
+            obj.xmin = xmin;
+            if nargin > 2, obj.xmax = xmax; end
+        end
+        
+        function obj = setStateInputBounds(obj,Fx, Fu, fmin, fmax)
+            %SETSTATEINPUTBOUNDS imposes bounds on states and inputs
+            %jointly as
+            %
+            % fmin <= Fx*x + Fu*u <= fmax
+            obj.fmin = fmin;
+            obj.fmax = fmax;
+            obj.Fx = Fx;
+            obj.Fu = Fu;
         end
         
         function obj = setScenarioTree(obj,tree)

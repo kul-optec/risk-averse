@@ -25,7 +25,11 @@ classdef MarkovianLinearStateInputFunction < marietta.functions.StageFunction
             end
             
             obj.nx = size(A{1}, 1);
-            obj.nu = size(B{1}, 2);
+            if ~isempty(B)
+                obj.nu = size(B{1}, 2);
+            else
+                obj.nu = 0;
+            end
             obj.nModes = length(A);
         end
         

@@ -6,6 +6,16 @@ classdef StageFunction < handle
     %
     
     methods (Abstract)
+        %APPLY applies the function to a triplet (x,u,w)
+        %
+        %Syntax:
+        %result = stage_function_object.apply(x,u,w)
+        %
+        %Input arguments:
+        % x    state vector 
+        % u    input vector
+        % w    disturbance value
+        %
         result = apply(obj, x, u, w);
         nx = getStateDimension(obj);
         nu = getInputDimension(obj);
@@ -35,6 +45,10 @@ classdef StageFunction < handle
         
         function r = mpower(f, p)
             r = marietta.functions.op.StageFunctionOp(f, p, @(s,z) (s^z));
+        end
+        
+        function r = log(f)
+            r = marietta.functions.op.StageFunctionOp(f, [], @(s,z) log(s));
         end
     end
     

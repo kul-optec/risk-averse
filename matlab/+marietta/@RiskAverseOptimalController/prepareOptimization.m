@@ -7,7 +7,7 @@ parametricRisk = obj.parametricRiskCost;
 umin = obj.umin;
 umax = obj.umax;
 stageWiseRiskConstraints = obj.stageWiseRiskConstraints;
-nestedRiskConstraints = obj.nestedRiskConstraints; 
+nestedRiskConstraints = obj.nestedRiskConstraints;
 
 % STEP 1 -- Construct all risks rho^i (at all non-leaf nodes)
 risk_cache = repmat(parametricRisk(1), tree.getNumberOfNonleafNodes, 1);
@@ -131,6 +131,35 @@ end
 if ~isempty(umax)
     constraints = [constraints; U <= umax];
     numConstraints = numConstraints + numel(U);
+end
+
+if ~isempty(obj.xmin)
+    constraints = [constraints; X >= obj.xmin];
+    numConstraints = numConstraints + numel(X);
+end
+
+if ~isempty(obj.xmax)
+    constraints = [constraints; X <= obj.xmax];
+    numConstraints = numConstraints + numel(X);
+end
+
+
+if ~isempty(obj.Fx) && ~isempty(obj.Fu)
+    nFx = size(obj.Fx, 1);
+    iterNonLeaf.restart();
+    while iterNonLeaf.hasNext()
+        nodeId = iterNonLeaf.next();
+        if ~isempty(obj.fmax)
+            constraints = [constraints;
+                obj.Fx * X(:, nodeId) + obj.Fu * U(:, nodeId) <= obj.fmax];
+            numConstraints = numConstraints + nFx;
+        end
+        if ~isempty(obj.fmin)
+            constraints = [constraints;
+                obj.Fx * X(:, nodeId) + obj.Fu * U(:, nodeId) >= obj.fmin];
+            numConstraints = numConstraints + nFx;
+        end
+    end
 end
 
 optimalCost = S(1);   % cost
