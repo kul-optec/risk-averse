@@ -91,10 +91,16 @@ subplot(212); solution.plotStateCoordinate(1)
 h = gca; set(h,'yscale','log')
 ```
 
-We may also produce the following interesting plot
+and 
 
 ```
 figure(2);
 fx = marietta.functions.MarkovianLinearStateInputFunction({1, 1}, {0,0}, {0,0});
 solution.plotFunctionErrorBar(fx, 0.95)
 ```
+
+which produces the following figure
+
+![bankroll progress](figures/xmpl_betting_bankroll.jpg)
+
+The black line is the expected value of the bankroll, the red line is the maximum, and the gray line is the 5%-quantile.
