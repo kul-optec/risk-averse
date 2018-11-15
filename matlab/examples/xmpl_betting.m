@@ -9,7 +9,7 @@ cAlpha = 0.05;   % risk aversion against ruin
 ruin = 800;      % amount that is considered to be ruin
 alpha = 0.95;    % risk aversion in betting
 p = 0.55;        % probability to win
-N = 12;          % prediction horizon
+N = 6;          % prediction horizon
 %% Construct scenario tree;
 prob_dist = [p, 1-p];
 tree_options.horizonLength = N;
@@ -53,9 +53,13 @@ disp(solution);
 figure(1);
 subplot(211); solution.plotInputCoordinate(1)
 h = gca; set(h,'yscale','log')
+ylabel('bet')
 subplot(212); solution.plotStateCoordinate(1)
 h = gca; set(h,'yscale','log')
+ylabel('bankroll')
 %%
 figure(2);
 fx = marietta.functions.MarkovianLinearStateInputFunction({1, 1}, {0,0}, {0,0});
 solution.plotFunctionErrorBar(fx, 0.95)
+ylabel('bankroll')
+legend('Expectation', '5% Quantile', 'Maximum');

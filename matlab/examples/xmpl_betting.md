@@ -91,6 +91,8 @@ subplot(212); solution.plotStateCoordinate(1)
 h = gca; set(h,'yscale','log')
 ```
 
+![bankroll progress](figures/xmpl_betting_bankroll_xu.jpg)
+
 and 
 
 ```
